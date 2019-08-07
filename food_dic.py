@@ -55,12 +55,13 @@ def linear_programming():
     print("Status: ", LpStatus[prob.status])
     result = {
         "status": LpStatus[prob.status],
-        "calories": 0
+        "calories": 0,
+        "consumable": []
     }
     for v in prob.variables():
         if v.varValue > 0:
             print(v.name, "=", v.varValue * 100, "grams")
-            result[v.name] = v.varValue * 100
+            result["consumable"].append({v.name[1:]: v.varValue * 100})
             result["calories"] += foods[v.name[1:]]["calories"] * v.varValue
     print("The total calories of this balanced diet is: ", str(result["calories"]))
     return result
@@ -95,6 +96,10 @@ class MyHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             self.wfile.write(json.dumps(linear_programming()).encode('utf-8'))
+        elif self.path == '/menu':
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps(foods).encode('utf-8'))
 
 
 # Shim consumable
