@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpService } from 'src/app/GlobalServices/http.service';
+import { MenuItem } from 'src/app/models/menuItem';
 
 @Component({
   selector: 'app-menu-list',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu-list.component.scss']
 })
 export class MenuListComponent implements OnInit {
-
-  constructor() { }
+  menu:MenuItem[] =[];
+  constructor(private http:HttpService) { }
 
   ngOnInit() {
+    this.http.GetMenu().then(menu => {
+      this.menu = menu;
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
 }

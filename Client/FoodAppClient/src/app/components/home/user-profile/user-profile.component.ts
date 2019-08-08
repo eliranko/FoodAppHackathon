@@ -16,22 +16,21 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
     this.gender = "male";
-    this.age = 0;
-    this.height = 0;
-    this.weight = 0;
   }
 
   calcRmr() {
     switch(this.gender) { 
       case "male": { 
         this.rmr = 66.5 + (13.75 * this.weight) + (5.003 * this.height) - (6.775 * this.age);
-        break; 
+         break;
       } 
       case "female": { 
          this.rmr = 655.1 + (9.563 * this.weight) + (1.850 * this.height) - (4.676 * this.age);          
       } 
-      this.http.UpdateRmr(this.rmr);
    } 
+   this.http.UpdateRmr(this.rmr,this.weight).then(t =>{
+    this.http.toggle();
+   });
    
   }
 
