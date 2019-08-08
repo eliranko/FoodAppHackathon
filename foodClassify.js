@@ -9,7 +9,7 @@ const shit_words = ["lunch", "food table", "dessert", "meal", "buffet", "appetiz
 const fs = require('fs');
 const good_classify = 0.6;
 
-var imageFile = fs.createReadStream('C:\\Users\\Natanel\\Desktop\\food images\\schnitzel.jpg');
+var imageFile = fs.createReadStream('./food images/kabab.jpg');
 var classifier_ids = ["food"];
 
 var params = {
