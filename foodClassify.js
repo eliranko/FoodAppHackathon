@@ -9,7 +9,7 @@ const shit_words = ["lunch", "food table", "dessert", "meal", "buffet", "appetiz
 const fs = require('fs');
 const good_classify = 0.6;
 
-var imageFile = fs.createReadStream('C://Users/avivb/Desktop/Food/Shit/test5.jpeg');
+var imageFile = fs.createReadStream('C:\\Users\\Natanel\\Desktop\\food images\\schnitzel.jpg');
 var classifier_ids = ["food"];
 
 var params = {
@@ -18,34 +18,69 @@ var params = {
 };
 
 var ingridients = [];
-
+var json = {
+	name: "",
+	capacity: ""
+};
 visualRecognition.classify(params, function(err, response) {
   if (err)
-    console.log(err);
+    console.error(err);
   else {
     console.log(JSON.stringify(response, null, 2))
-	
-	for (i = 0; i < response.images.length; i++) { 
-		for (j = 0; j < response.images[i].classifiers.length; j++) {
-			for (m = 0; m < response.images[i].classifiers[j].classes.length; m++){
-				curClass = response.images[i].classifiers[j].classes[m]
-				
-				if (shit_words.includes(curClass.class)) {
-					continue;
-				} else if (curClass.score > good_classify) {
-					ingridients.push(curClass.class)
+	curClass = response.images[0].classifiers[0].classes[0];
+	json.name = curClass.class;
+	if (shit_words.includes(curClass.class)){	
+		json.capacity = 0;
+	} else if (curClass.score > good_classify) {
+					json.capacity = 1;
+				} else {
+					json.capacity = 0;
 				}
-			}
-		}
-	}
-	
-	console.log(ingridients)
+	// for (i = 0; i < response.images.length; i++) { 
+	// 	for (j = 0; j < response.images[i].classifiers.length; j++) {
+	// 		for (m = 0; m < response.images[i].classifiers[j].classes.length; m++){
+	// 			curClass = response.images[i].classifiers[j].classes[m]
+				
+	// 			if (shit_words.includes(curClass.class)) {
+	// 				continue;
+	// 			} else if (curClass.score > good_classify) {
+	// 				ingridients.push(curClass.class);
+	// 				json.name = curClass.class;
+	// 				json.capacity = 1;
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// ingridients = response;
+	 console.log(json);
+	postData(json);
 }});
 
 
-var xhr = new XMLHttpRequest();
-xhr.open("POST", "localhost:21446/api/food", true);
-xhr.setRequestHeader('Content-Type', 'application/json');
-xhr.send(JSON.stringify({
-    ingridients: ingridients
-}));
+function postData(obj) {
+	const http = require('http');
+	const data = JSON.stringify(obj);
+const options = {
+	hostname: '132.74.210.70',
+	port: '8080',
+	path: '/food',
+	method: 'post',
+	headers: {
+		'Content-Type': 'application/json',
+		'Content-Length': data.length
+	}
+}
+const req = http.request(options, (res) => {
+	console.log(`statusCode: ${res.statusCode}`)
+	res.on('data', (d) => {
+		process.stdout.write(d);
+	})
+})
+
+req.on('error', (error) => {
+	console.error(error);
+})
+req.write(data);
+req.end();
+
+}
