@@ -61,7 +61,7 @@ function postData(obj) {
 	const http = require('http');
 	const data = JSON.stringify(obj);
 const options = {
-	hostname: '132.74.210.70',
+	hostname: 'localhost',
 	port: '8080',
 	path: '/food',
 	method: 'post',
