@@ -9,14 +9,10 @@ from pulp import *
 foods = {}
 rmr = 1000
 weight = 33
-protein = 0
-carbs = 0
-fats = 0
-cals = 0
 
 
 def get_nutritions(prod_name):
-    HEADERS = {'x-app-id': "32c231c0", 'x-app-key': "a84622c8d4c9610583dfac507945ca8d",
+    HEADERS = {'x-app-id': "5be5df7c", 'x-app-key': "4ee10acd9358169750cdefee2412ece8",
                'Content-Type': "application/json"}
     url = "https://trackapi.nutritionix.com/v2/natural/nutrients"
     payload = json.dumps({"query":prod_name})
@@ -61,7 +57,7 @@ def linear_programming():
     for v in prob.variables():
         if v.varValue > 0:
             print(v.name, "=", v.varValue * 100, "grams")
-            result["consumable"].append({v.name[1:]: v.varValue * 100})
+            result["consumable"].append({"name": v.name[1:], "value": v.varValue * 100})
             result["calories"] += foods[v.name[1:]]["calories"] * v.varValue
     print("The total calories of this balanced diet is: ", str(result["calories"]))
     return result
@@ -76,30 +72,54 @@ class MyHandler(BaseHTTPRequestHandler):
         post_body = literal_eval(post_body)
         if self.path == '/food':
             if post_body["capacity"] == 0:
-                foods.remove(post_body["name"])
+                foods.pop(post_body["name"], None)
             else:
                 foods[post_body["name"]] = get_nutritions(post_body["name"])
             self.send_response(200)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-type")
             self.end_headers()
-            #self.wfile.write(json.dumps(get_nutritions(post_body["name"])).encode('utf-8'))
         elif self.path == '/rmr':
-            global rmr, carbs, protein, fats, cals, weight
-            rmr = post_body["rmr"]
-            cals = float(rmr) * 0.5
+            global rmr, weight
+            rmr = float(post_body["rmr"]) * 0.5
             weight = float(post_body["weight"]) * 0.5
-            protein = int(float(post_body["weight"]) * 1.5)
-            fats = int(float(cals) * 0.2)
-            carbs = int(float(cals - (protein * 4 + fats * 9)) / 4)
+            self.send_response(200)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-type")
+            self.end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(200, "ok")
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
 
     def do_GET(self):
         if self.path == '/optimal':
             self.send_response(200)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-type")
             self.end_headers()
             self.wfile.write(json.dumps(linear_programming()).encode('utf-8'))
         elif self.path == '/menu':
             self.send_response(200)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-type")
             self.end_headers()
-            self.wfile.write(json.dumps(foods).encode('utf-8'))
+            result = []
+            for i in foods:
+                result.append({"name": i, "data": foods[i]})
+            self.wfile.write(json.dumps(result).encode('utf-8'))
 
 
 # Shim consumable
