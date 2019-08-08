@@ -9,7 +9,7 @@ import { HttpService } from 'src/app/GlobalServices/http.service';
 })
 export class OptimalMealComponent implements OnInit {
   optimalDish:OptimalMeal = new OptimalMeal();
-
+  displayedColumns: string[] = ['name', 'amount'];
   constructor(private http:HttpService) { }
 
   ngOnInit() {

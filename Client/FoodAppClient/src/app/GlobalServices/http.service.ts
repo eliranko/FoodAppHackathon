@@ -8,7 +8,7 @@ import { MenuItem } from '../models/menuItem';
   providedIn: 'root'
 })
 export class HttpService {
-  private serverUrl = "http://132.74.210.70:8080";
+  private serverUrl = "http://localhost:8080";
   @Output() change: EventEmitter<string> = new EventEmitter();
 
   constructor(private http:HttpClient) { }

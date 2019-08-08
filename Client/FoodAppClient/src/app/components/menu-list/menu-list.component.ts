@@ -9,6 +9,7 @@ import { MenuItem } from 'src/app/models/menuItem';
 })
 export class MenuListComponent implements OnInit {
   menu:MenuItem[] =[];
+  displayedColumns: string[] = ['name', 'protein','fat','carbs','calories'];
   constructor(private http:HttpService) { }
 
   ngOnInit() {
