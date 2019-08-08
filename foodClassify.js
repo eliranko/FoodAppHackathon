@@ -8,53 +8,72 @@ var visualRecognition = new VisualRecognitionV3({
 const shit_words = ["lunch", "food table", "dessert", "meal", "buffet", "appetizer", "non-food", "snack"]
 const fs = require('fs');
 const good_classify = 0.6;
-
-var imageFile = fs.createReadStream('./food images/kabab.jpg');
 var classifier_ids = ["food"];
 
-var params = {
-  images_file: imageFile,
-  classifier_ids: classifier_ids
-};
+loop();
+function loop() {
+	fs.readdir('./food images/', (err, files) => {
+		console.log(files);
+		files.forEach(file => {
+			console.log(file);
+			getDataFromImage(fs.createReadStream('./food images/' + file));
+		})
+	})
+	setTimeout(loop, 5000);
+}
 
-var ingridients = [];
-var json = {
-	name: "",
-	capacity: ""
-};
-visualRecognition.classify(params, function(err, response) {
-  if (err)
-    console.error(err);
-  else {
-    console.log(JSON.stringify(response, null, 2))
-	curClass = response.images[0].classifiers[0].classes[0];
-	json.name = curClass.class;
-	if (shit_words.includes(curClass.class)){	
-		json.capacity = 0;
-	} else if (curClass.score > good_classify) {
-					json.capacity = 1;
-				} else {
-					json.capacity = 0;
-				}
-	// for (i = 0; i < response.images.length; i++) { 
-	// 	for (j = 0; j < response.images[i].classifiers.length; j++) {
-	// 		for (m = 0; m < response.images[i].classifiers[j].classes.length; m++){
-	// 			curClass = response.images[i].classifiers[j].classes[m]
-				
-	// 			if (shit_words.includes(curClass.class)) {
-	// 				continue;
-	// 			} else if (curClass.score > good_classify) {
-	// 				ingridients.push(curClass.class);
-	// 				json.name = curClass.class;
-	// 				json.capacity = 1;
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// ingridients = response;
-	 console.log(json);
-	postData(json);
-}});
+	
+
+var imageFile = fs.createReadStream('./food images/kabab.jpg');
+function getDataFromImage(image) {
+	var params = {
+		images_file: image,
+		classifier_ids: classifier_ids
+	  };
+	  
+	  var ingridients = [];
+	  var json = {
+		  name: "",
+		  capacity: ""
+	  };
+	  visualRecognition.classify(params, function(err, response) {
+		if (err) {
+		  console.error(err);
+		  console.log(params);
+		}
+		else {
+		  console.log(JSON.stringify(response, null, 2))
+		  curClass = response.images[0].classifiers[0].classes[0];
+		  json.name = curClass.class;
+		  if (shit_words.includes(curClass.class)){	
+			  json.capacity = 0;
+		  } else if (curClass.score > good_classify) {
+						  json.capacity = 1;
+					  } else {
+						  json.capacity = 0;
+					  }
+		  // for (i = 0; i < response.images.length; i++) { 
+		  // 	for (j = 0; j < response.images[i].classifiers.length; j++) {
+		  // 		for (m = 0; m < response.images[i].classifiers[j].classes.length; m++){
+		  // 			curClass = response.images[i].classifiers[j].classes[m]
+					  
+		  // 			if (shit_words.includes(curClass.class)) {
+		  // 				continue;
+		  // 			} else if (curClass.score > good_classify) {
+		  // 				ingridients.push(curClass.class);
+		  // 				json.name = curClass.class;
+		  // 				json.capacity = 1;
+		  // 			}
+		  // 		}
+		  // 	}
+		  // }
+		  // ingridients = response;
+		   console.log(json);
+		  postData(json);
+	  }});
+	  
+
+}
 
 
 function postData(obj) {
