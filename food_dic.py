@@ -121,7 +121,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 result.append({"name": i, "data": foods[i]})
             self.wfile.write(json.dumps(result).encode('utf-8'))
 
-
+'''
 # Shim consumable
 foods["chicken"] = get_nutritions("chicken")
 foods["rice"] = get_nutritions("rice")
@@ -132,6 +132,7 @@ foods["potatoes"] = get_nutritions("potatoes")
 foods["fish"] = get_nutritions("fish")
 foods["bread"] = get_nutritions("bread")
 foods["mashed_potatoe"] = get_nutritions("mashed_potatoe")
+'''
 
 httpd = socketserver.TCPServer(("", 8080), MyHandler)
 httpd.serve_forever()
