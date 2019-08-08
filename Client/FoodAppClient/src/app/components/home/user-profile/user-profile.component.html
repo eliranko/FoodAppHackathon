@@ -1,0 +1,43 @@
+<div class="form">
+    <table>
+        <tr>
+            <td>
+                <span class="title">Gender:</span>
+            </td>
+            <td>
+                    <select [(ngModel)]="gender"> 
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                          </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="title">Enter age:</span>
+            </td>
+            <td>
+                <input type="number" placeholder="0" [(ngModel)]="age" maxlength="3">
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="title">Enter height:</span>
+            </td>
+            <td>
+                <input type="number" placeholder="0" [(ngModel)]="height" maxlength="3">
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="title">Enter weight:</span>
+            </td>
+            <td>
+                <input type="number" placeholder="0" [(ngModel)]="weight" maxlength="3">
+
+            </td>
+        </tr>
+    </table>
+    <button mat-raised-button color="primary" (click)="calcRmr()">Update</button>
+</div>

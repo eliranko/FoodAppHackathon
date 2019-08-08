@@ -1,0 +1,16 @@
+<h1>Your Optimal Meal</h1>
+<span>caloris of meal: {{optimalDish?.calories}}</span>
+<table>
+        <tr>
+            <th style="padding-right: 80px;">Name</th>
+            <th>amount(gram)</th>
+        </tr>
+        <tr *ngFor="let meal of optimalDish?.consumable">
+            <td style="text-align:center;" class="dish-name">{{meal?.name}}
+            </td>
+            <td>
+                    {{meal?.value}}
+            </td>
+        </tr>
+</table>
+
